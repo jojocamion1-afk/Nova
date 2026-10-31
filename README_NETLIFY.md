@@ -21,11 +21,18 @@ Pour conserver la connexion Steam, utilise **un dépôt GitHub + l'import Netlif
 2. Sur GitHub, crée un nouveau dépôt, puis ajoute à sa racine **tout le contenu du dossier** (en particulier `package.json`, `netlify.toml`, le dossier `app` et `lib`).
 3. Sur Netlify : **Add new project → Import an existing project → GitHub**, puis sélectionne ton dépôt.
 4. Conserve les paramètres indiqués dans `netlify.toml` : commande `npm run build`, répertoire de publication `.next`, Node 22.
-5. Dans Netlify : **Project configuration → Environment variables**, crée `STEAM_SESSION_SECRET` (valeur secrète d'au moins 32 caractères aléatoires, idéalement 64).
-6. Déploie ou relance le déploiement. Attends une URL HTTPS Netlify.
+5. Dans Netlify : **Project configuration → Environment variables**, crée `STEAM_SESSION_SECRET` (valeur secrète d'au moins 32 caractères aléatoires, idéalement 64). Sa portée doit impérativement inclure **Functions** (choisis **All scopes** si proposé). Ne mets jamais cette valeur dans GitHub, `.env.example` ou `netlify.toml`.
+6. **Relance un nouveau déploiement après avoir ajouté la variable**. Attends une URL HTTPS Netlify.
 7. Teste « Se connecter avec Steam » : Steam doit rediriger vers ta nouvelle boutique. Teste aussi la déconnexion.
 
 Si tu changes de domaine Netlify, les URLs de retour Steam s'adaptent automatiquement à l'origine HTTPS de la requête.
+
+## Si la connexion Steam ne fonctionne pas
+
+- Si la boutique indique **« Connexion Steam à activer sur Netlify »**, la variable `STEAM_SESSION_SECRET` est manquante, trop courte ou indisponible côté **Functions**. Corrige-la dans l'interface Netlify et **redéploie**.
+- Si Steam te renvoie vers la boutique avec un message d'erreur, vérifie que tu ouvres le site sur son **domaine HTTPS public** (pas un aperçu local), puis réessaie en navigation privée.
+- Si un message d'erreur persiste, partage l'adresse du site Netlify et une capture de l'erreur (ne partage jamais les secrets).
+- Le format OpenID de Steam utilise parfois un identifiant `http://steamcommunity.com/openid/id/...` et parfois `https://...` : cette version accepte les deux après vérification auprès de Steam.
 
 ## Fichiers principaux
 

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { isSteamConfigured, makeCookie, STATE_COOKIE } from "../../../../lib/steam";
 export const dynamic = "force-dynamic";
 export function GET(request: NextRequest) {
-  if (!isSteamConfigured()) return NextResponse.json({ message: "L'authentification Steam n'est pas encore configurée." }, { status: 503 });
+  if (!isSteamConfigured()) return NextResponse.redirect(new URL("/?auth=setup", request.url));
   const origin = new URL(request.url).origin;
   const state = crypto.randomUUID().replace(/-/g, "");
   const params = new URLSearchParams({

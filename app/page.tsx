@@ -35,8 +35,11 @@ export default function Home() {
   useEffect(() => {
     fetch("/api/auth/session", { cache: "no-store" }).then(async r => r.ok ? (await r.json()) as SteamSession : { authenticated: false })
       .then(s => setSteam(s)).catch(() => setSteam({ authenticated: false }));
-    if (window.location.search.includes("auth=error")) {
-      setMessage("La connexion Steam n'a pas pu être vérifiée. Réessaie depuis le bouton officiel.");
+    const authStatus = new URLSearchParams(window.location.search).get("auth");
+    if (authStatus === "error" || authStatus === "setup") {
+      setMessage(authStatus === "setup"
+        ? "Connexion Steam à activer sur Netlify : ajoute STEAM_SESSION_SECRET dans les variables d'environnement (portée Functions), puis redéploie le site."
+        : "La connexion Steam n'a pas pu être vérifiée. Réessaie depuis le bouton officiel.");
       window.history.replaceState(null, "", window.location.pathname + window.location.hash);
     }
   }, []);

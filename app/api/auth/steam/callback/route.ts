@@ -14,7 +14,9 @@ export async function GET(request: NextRequest) {
   if (!state || !expectedState || !/^[a-f0-9]{32}$/.test(state) || state !== expectedState) return fail();
   const claimed = url.searchParams.get("openid.claimed_id");
   const identity = url.searchParams.get("openid.identity");
-  const match = claimed?.match(/^https:\/\/steamcommunity\.com\/openid\/id\/(\d{17})$/);
+  // Steam documents the Claimed ID as HTTP, and some responses use HTTPS.
+  // The protocol can vary, but the exact Steam host, path and SteamID must not.
+  const match = claimed?.match(/^https?:\/\/steamcommunity\.com\/openid\/id\/(\d{17})$/);
   if (!match || identity !== claimed) return fail();
   if (url.searchParams.get("openid.mode") !== "id_res" || url.searchParams.get("openid.op_endpoint") !== endpoint) return fail();
   const returnTo = `${url.origin}/api/auth/steam/callback?state=${state}`;
